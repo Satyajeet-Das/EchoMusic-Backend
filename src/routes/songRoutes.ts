@@ -18,4 +18,5 @@ controller.uploadSong);
 
 router.get('/allSongs',controller.getAllSong);
 router.get('/filter',controller.getSongByFilter);
+router.delete('/deleteSong/:id',controller.deleteByID);
 export default router;

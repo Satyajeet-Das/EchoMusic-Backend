@@ -85,12 +85,12 @@ export const getAllSong = async (req: Request, res: Response): Promise<void> => 
 
 export const getSongByFilter = async (req: Request, res: Response): Promise<void> => {
 
-  const { genre,title,artist,releaseDate  } = req.query;
-  const query :any = {};
-  if(genre) query.genre=genre;
-  if(title) query.title=title;
-  if(artist) query.artist=artist;
-  if(releaseDate) query.releaseDate=releaseDate;
+  const { genre, title, artist, releaseDate } = req.query;
+  const query: any = {};
+  if (genre) query.genre = genre;
+  if (title) query.title = title;
+  if (artist) query.artist = artist;
+  if (releaseDate) query.releaseDate = releaseDate;
   try {
     const songs = await Song.find(query); // get all songs whose genre matches the query genre
     res.status(200).json({ songs });
@@ -99,4 +99,23 @@ export const getSongByFilter = async (req: Request, res: Response): Promise<void
     res.status(500).json({ message: "Something went wrong" })
   }
 
+}
+export const deleteByID = async (req: Request, res: Response): Promise<void> => {
+  const itemId = req.params.id;
+  try{
+  const result= await Song.findByIdAndDelete(itemId);
+  if(result)
+  {
+    res.status(200).json({message:"Item deleted successfully"});
+    return;
+
+  }
+  else{
+    res.status(400).json({message:"Invalid request"});
+  }
+}catch(err)
+{
+  console.log(err);
+  res.status(500).json({message:"Error deleting an item"});
+}
 }
