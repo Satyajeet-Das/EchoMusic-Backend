@@ -27,25 +27,25 @@ const upload = multer({
     const extName = allowedExtensions.test(path.extname(file.originalname).toLowerCase());
 
     if (mimeType && extName) {
-        return cb(null, true);
+      return cb(null, true);
     }
     cb(new Error("Invalid file type")); // This will trigger the error
-},
+  },
 }).single("song");
 
 // Function to handle file upload and save metadata
-export const uploadSong = async (req: Request,res: Response): Promise<void> => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     res.status(400).json({ message: errors.array() });
-//     return;
-//   }
+export const uploadSong = async (req: Request, res: Response): Promise<void> => {
+  //   const errors = validationResult(req);
+  //   if (!errors.isEmpty()) {
+  //     res.status(400).json({ message: errors.array() });
+  //     return;
+  //   }
   upload(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ message: err.message });
     }
 
-    const { title, artist, genre,duration, releaseDate} = req.body;
+    const { title, artist, genre, duration, releaseDate } = req.body;
     const filePath = req.file?.path;
     // const fileFormat = path.extname(req.file?.originalname || "");
 
@@ -71,3 +71,32 @@ export const uploadSong = async (req: Request,res: Response): Promise<void> => {
     }
   });
 };
+
+export const getAllSong = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const songs = await Song.find();
+    res.status(200).json(songs);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong" })
+  }
+}
+
+export const getSongByFilter = async (req: Request, res: Response): Promise<void> => {
+
+  const { genre,title,artist,releaseDate  } = req.query;
+  const query :any = {};
+  if(genre) query.genre=genre;
+  if(title) query.title=title;
+  if(artist) query.artist=artist;
+  if(releaseDate) query.releaseDate=releaseDate;
+  try {
+    const songs = await Song.find(query); // get all songs whose genre matches the query genre
+    res.status(200).json({ songs });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong" })
+  }
+
+}

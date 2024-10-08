@@ -16,5 +16,6 @@ router.post("/uploadSong",
 // ]
 controller.uploadSong);
 
-
+router.get('/allSongs',controller.getAllSong);
+router.get('/filter',controller.getSongByFilter);
 export default router;
